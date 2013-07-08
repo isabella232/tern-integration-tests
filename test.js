@@ -30,7 +30,7 @@ function addTestGroup(group, groupPath) {
 }
 
 function nodeFilter(_t) {
-  return ['Identifier', 'MemberExpression', 'ThisExpression'].indexOf(_t) > -1;
+  return ['Identifier', 'ThisExpression'].indexOf(_t) > -1;
 }
 
 function addTestCase(name, casePath, ternServer) {
@@ -38,7 +38,7 @@ function addTestCase(name, casePath, ternServer) {
   it(name, function(done) {
     var typesV = astannotate.nodeVisitor('type', nodeFilter, function(node, wantType) {
       infer.withContext(ternServer.cx, function() {
-        var expr = infer.findExpressionAt(file.ast, node.start, node.end, ternServer.cx.topScope);
+        var expr = infer.findExpressionAround(file.ast, node.start, node.end);
         var typ = infer.expressionType(expr);
 
         var start = acorn.getLineInfo(file.text, node.start), end = acorn.getLineInfo(file.text, node.end);
@@ -46,13 +46,14 @@ function addTestCase(name, casePath, ternServer) {
 
         typ = typ.getType(true) || typ.getFunctionType();
         assert(typ, 'Expr has no type\n' + loc);
-        assert(typ.toString() === wantType, 'Expr type does not match expectation\n' + loc + '\nWant: ' + wantType + '\nGot:  ' + typ.toString());
+        var typStr = typ.toString(1);
+        assert(typStr === wantType, 'Expr type does not match expectation\n' + loc + '\nWant: ' + wantType + '\nGot:  ' + typStr);
       });
     });
     var completionsV = astannotate.nodeVisitor('has_props', nodeFilter, function(node, wantProps) {
       wantProps = wantProps.trim().split(',');
       infer.withContext(ternServer.cx, function() {
-        var expr = infer.findExpressionAt(file.ast, node.start, node.end, ternServer.cx.topScope);
+        var expr = infer.findExpressionAround(file.ast, node.start, node.end);
         var typ = infer.expressionType(expr);
         var allProps = [];
 
