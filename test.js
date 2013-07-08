@@ -29,10 +29,27 @@ function addTestGroup(group, groupPath) {
   });
 }
 
+function nodeFilter(_t) {
+  return ['Identifier', 'MemberExpression', 'ThisExpression'].indexOf(_t) > -1;
+}
+
 function addTestCase(name, casePath, ternServer) {
   var file = ternServer.files.filter(function(f) { return f.name === casePath; })[0];
   it(name, function(done) {
-    var completionsV = astannotate.nodeVisitor('has_props', function(_t) { return ['Identifier', 'MemberExpression', 'ThisExpression'].indexOf(_t) > -1; }, function(node, wantProps) {
+    var typesV = astannotate.nodeVisitor('type', nodeFilter, function(node, wantType) {
+      infer.withContext(ternServer.cx, function() {
+        var expr = infer.findExpressionAt(file.ast, node.start, node.end, ternServer.cx.topScope);
+        var typ = infer.expressionType(expr);
+
+        var start = acorn.getLineInfo(file.text, node.start), end = acorn.getLineInfo(file.text, node.end);
+        var loc = 'Expr:    ' + file.text.slice(node.start, node.end) + '\nAt:      ' + file.name + ':' + start.line + ' [' + node.type + ']';
+var typ0 = typ;
+        typ = typ.getType();
+        assert(typ, 'Expr has no type\n' + loc);
+        assert(typ.toString() === wantType, 'Expr type does not match expectation\n' + loc + 'Want: ' + wantType + '\nGot:  ' + typ.toString());
+      });
+    });
+    var completionsV = astannotate.nodeVisitor('has_props', nodeFilter, function(node, wantProps) {
       wantProps = wantProps.trim().split(',');
       infer.withContext(ternServer.cx, function() {
         var expr = infer.findExpressionAt(file.ast, node.start, node.end, ternServer.cx.topScope);
@@ -56,7 +73,7 @@ function addTestCase(name, casePath, ternServer) {
         assert(wantProps.length === 0, 'Expr is missing properties\n' + loc + '\nMissing: ' + wantProps.join(' ') + '\nAll:     ' + allProps.join(' ') + '\nType:    ' + typ.toString());
       });
     });
-    completionsV(file.text, file.ast);
+    astannotate.multi([typesV, completionsV])(file.text, file.ast);
     done();
   });
 }
