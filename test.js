@@ -53,7 +53,7 @@ function addTestCase(name, casePath, ternServer) {
         wantProps.sort();
         allProps.sort();
 
-        assert(wantProps.length === 0, 'Expr is missing properties\n' + loc + '\nMissing: ' + wantProps.join(' ') + '\nAll:     ' + allProps.join(' '));
+        assert(wantProps.length === 0, 'Expr is missing properties\n' + loc + '\nMissing: ' + wantProps.join(' ') + '\nAll:     ' + allProps.join(' ') + '\nType:    ' + typ.toString());
       });
     });
     completionsV(file.text, file.ast);
