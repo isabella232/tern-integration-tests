@@ -1,0 +1,10 @@
+{
+  "defs": [
+    "browser",
+    "ecma5",
+    "jquery"
+  ],
+  "plugins": {
+    "requirejs": {}
+  }
+}
