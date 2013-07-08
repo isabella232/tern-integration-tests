@@ -46,7 +46,7 @@ function addTestCase(name, casePath, ternServer) {
 var typ0 = typ;
         typ = typ.getType();
         assert(typ, 'Expr has no type\n' + loc);
-        assert(typ.toString() === wantType, 'Expr type does not match expectation\n' + loc + 'Want: ' + wantType + '\nGot:  ' + typ.toString());
+        assert(typ.toString() === wantType, 'Expr type does not match expectation\n' + loc + '\nWant: ' + wantType + '\nGot:  ' + typ.toString());
       });
     });
     var completionsV = astannotate.nodeVisitor('has_props', nodeFilter, function(node, wantProps) {
