@@ -32,7 +32,7 @@ function addTestGroup(group, groupPath) {
 function addTestCase(name, casePath, ternServer) {
   var file = ternServer.files.filter(function(f) { return f.name === casePath; })[0];
   it(name, function(done) {
-    var completionsV = astannotate.nodeVisitor('has_props', function(_t) { return ['Identifier', 'MemberExpression'].indexOf(_t) > -1; }, function(node, wantProps) {
+    var completionsV = astannotate.nodeVisitor('has_props', function(_t) { return ['Identifier', 'MemberExpression', 'ThisExpression'].indexOf(_t) > -1; }, function(node, wantProps) {
       wantProps = wantProps.trim().split(',');
       infer.withContext(ternServer.cx, function() {
         var expr = infer.findExpressionAt(file.ast, node.start, node.end, ternServer.cx.topScope);
