@@ -1,4 +1,7 @@
 var Backbone = require('backbone');
+
+Backbone;/*type:{$: fn(selector: string, context: Element) -> jQuery.fn, Events: Backbone.Events, VERSION: string, emulateHTTP: bool, emulateJSON: bool, noConflict: fn(), ...}*/
+
 exports.Person = Backbone.Model.extend({
   defaults: {
     likesIceCream: true
