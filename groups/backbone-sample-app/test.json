@@ -1,0 +1,13 @@
+{
+  "defs": [
+    "browser",
+    "ecma5",
+    "jquery"
+  ],
+  "loadEagerly": [
+    "node_modules/backbone/backbone.js"
+  ],
+  "plugins": {
+    "node": {}
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "tern-integration-tests",
+  "description": "unofficial integration test suite for tern",
+  "keywords": ["tern"],
+  "version": "0.0.1",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sourcegraph/tern-integration-tests.git"
+  },
+  "dependencies": {
+    "acorn": "0.3.1",
+    "astannotate": "0.0.2",
+    "mocha": "1.10.0",
+    "tern": "git://github.com/sqs/tern.git#1eced43b978976bc4f5e11f7e18ba9c531710d03"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
