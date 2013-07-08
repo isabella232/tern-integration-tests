@@ -15,6 +15,7 @@
     "tern": "git://github.com/sqs/tern.git#1eced43b978976bc4f5e11f7e18ba9c531710d03"
   },
   "scripts": {
+    "preinstall": "make",
     "test": "mocha"
   }
 }
