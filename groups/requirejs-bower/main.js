@@ -10,5 +10,6 @@ require.config({
 require([
   'underscore',
 ], function (_) {
+  _;/*has_props:isFunction*/
   _.isFunction;/*type:fn(obj: ?) -> bool*/
 });

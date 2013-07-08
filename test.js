@@ -43,7 +43,8 @@ function addTestCase(name, casePath, ternServer) {
 
         var start = acorn.getLineInfo(file.text, node.start), end = acorn.getLineInfo(file.text, node.end);
         var loc = 'Expr:    ' + file.text.slice(node.start, node.end) + '\nAt:      ' + file.name + ':' + start.line + ' [' + node.type + ']';
-        typ = typ.getType();
+
+        typ = typ.getType(true) || typ.getFunctionType();
         assert(typ, 'Expr has no type\n' + loc);
         assert(typ.toString() === wantType, 'Expr type does not match expectation\n' + loc + '\nWant: ' + wantType + '\nGot:  ' + typ.toString());
       });
@@ -58,7 +59,7 @@ function addTestCase(name, casePath, ternServer) {
         var start = acorn.getLineInfo(file.text, node.start), end = acorn.getLineInfo(file.text, node.end);
         var loc = 'Expr:    ' + file.text.slice(node.start, node.end) + '\nAt:      ' + file.name + ':' + start.line + ' [' + node.type + ']';
 
-        typ = typ.getType();
+        typ = typ.getType(true) || typ.getFunctionType();
         assert(typ, 'Expr has no type\n' + loc);
 
         typ.getType().forAllProps(function(prop) {
