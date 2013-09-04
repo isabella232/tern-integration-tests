@@ -11,4 +11,4 @@ exports.Person = Backbone.Model.extend({
 exports.Person;/*has_props:maxNameLength*/
 
 exports.alice = new exports.Person({fullName: 'Alice'});
-exports.alice;/*has_props:addFriend,fullName,url*/ // TODO(sqs): 'fullName' is failing
+exports.alice;/*has_props:addFriend,fullName,url*/
