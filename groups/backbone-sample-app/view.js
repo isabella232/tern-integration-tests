@@ -1,9 +1,9 @@
 var Backbone = require('backbone');
 var Test = Backbone.View.extend({
-  foo: function () {
+  foo:/*def:exports.t.foo*/ function () {
     this.something = 42;
   },
-  bar: function () {
+  bar:/*def:exports.t.bar*/ function () {
     this;/*has_props:foo,bar,something,qux*/
   }
 });

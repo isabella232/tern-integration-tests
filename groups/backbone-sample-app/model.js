@@ -2,11 +2,11 @@ var Backbone = require('backbone');
 
 Backbone;/*type:{$: fn(selector: string, context: Element) -> jQuery.fn, Events: Backbone.Events, VERSION: string, emulateHTTP: bool, emulateJSON: bool, noConflict: fn(), ...}*/
 
-exports.Person = Backbone.Model.extend({
+exports.Person/*def:exports.Person*/ = Backbone.Model.extend({
   defaults: {
     likesIceCream: true
   }
-  addFriend: function(friend) { return true; }
+  addFriend:/*def:exports.Person.prototype.addFriend*/ function(friend) { return true; }
 }, {maxNameLength: 20});
 exports.Person;/*has_props:maxNameLength*/
 

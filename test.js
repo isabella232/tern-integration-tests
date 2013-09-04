@@ -4,6 +4,7 @@ var acorn = require('acorn'),
     fs = require('fs'),
     infer = require('tern/lib/infer'),
     path = require('path'),
+    scopevisitor = require('scopevisitor'),
     tern = require('tern');
 
 function resolve(pth) { return path.resolve(__dirname, pth); }
@@ -35,7 +36,38 @@ function nodeFilter(_t) {
 
 function addTestCase(name, casePath, ternServer) {
   var file = ternServer.files.filter(function(f) { return f.name === casePath; })[0];
+
+  if (ternServer._node) ternServer._node.modules[file.name].propagate(ternServer.cx.topScope.defProp('exports'));
+
+  var aliases = {local: {}, nonlocal: {}}, locals = {}, nonlocals = {};
+  scopevisitor.inspect(file.name, ternServer.cx.topScope, function(path, prop, local, alias) {
+    (local ? locals : nonlocals)[path] = prop;
+    if (alias) aliases[local ? 'local' : 'nonlocal'][path] = alias;
+  });
+
   it(name, function(done) {
+    // The inline directive DEF causes the test to fail if the specified
+    // definition is not found. The directive is of the form /*DEF:<path>:<local>:<alias>*/,
+    // where <path> is the def's path, <local> is either 'local' or 'nonlocal' (without quotes),
+    // and <alias> is the path of the destination def for this alias def. Options <local> and
+    // <alias> are optional.
+    var defsV = astannotate.nodeVisitor('def', function(type) { return type == 'Identifier' || type == 'Literal' || type == 'FunctionExpression'; }, function(node, info) {
+      info = info.split(':');
+      var path = info[0];
+      var kind = info[1] || 'nonlocal';
+      var defs = ({nonlocal: nonlocals, local: locals})[kind];
+      assert(defs[path], 'expected ' + kind + ' path ' + path + ' to be emitted\n' + kind + 's:\n  ' + Object.keys(defs).join('\n  '));
+      assert(defs[path].originNode, 'expected ' + kind + ' path ' + path + ' to have non-null originNode\nFull def:\n' + require('util').inspect(defs[path], null, 2));
+      assert.equal(defs[path].originNode, node);
+
+      var alias = info[2];
+      if (alias) {
+        assert(aliases[kind][path], 'expected ' + kind + ' path ' + path + ' to be an alias');
+        aliases[kind][path].should.eql(alias);
+      } else {
+        assert(!aliases[kind][path], 'expected ' + kind + ' path ' + path + ' to not be an alias, but it aliases ' + aliases[kind][path]);
+      }
+    });
     var typesV = astannotate.nodeVisitor('type', nodeFilter, function(node, wantType) {
       infer.withContext(ternServer.cx, function() {
         var expr = infer.findExpressionAround(file.ast, node.start, node.end);
@@ -74,7 +106,7 @@ function addTestCase(name, casePath, ternServer) {
         assert(wantProps.length === 0, 'Expr is missing properties\n' + loc + '\nMissing: ' + wantProps.join(' ') + '\nAll:     ' + allProps.join(' ') + '\nType:    ' + typ.toString());
       });
     });
-    astannotate.multi([typesV, completionsV])(file.text, file.ast);
+    astannotate.multi([defsV, typesV, completionsV])(file.text, file.ast);
     done();
   });
 }
