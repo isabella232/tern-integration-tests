@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "acorn": "0.3.1",
-    "astannotate": "0.0.2",
-    "mocha": "1.10.0",
-    "tern": "git://github.com/sqs/tern.git#tern-integration-tests"
+    "astannotate": "0.0.3",
+    "mocha": "1.12.1",
+    "tern": "0.4.0"
   },
   "scripts": {
     "preinstall": "make",
