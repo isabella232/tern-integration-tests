@@ -3,7 +3,9 @@ define([
   'jquery',
   'underscore',
   'backbone',
-], function ($, _, Backbone) {
+  'models',
+], function ($, _, Backbone, models) {
+  var p = new models.Person();
   var AppView = Backbone.View.extend({
     el: '#app',
     events: {
@@ -35,6 +37,11 @@ define([
       return 'Hello, ' + this.$nameInput.val() + '!';
     }
   });
+
+  var av = new AppView();
+  av;/*has_props:el,events,initialize,render,updatePreview,updateName,helloLabel*/
+  av.helloLabel;/*type:fn() -> string*/
+  av.events;/*type:{click #update-name: string, keyup #name: string}*/
 
   return {AppView: AppView};
 });
